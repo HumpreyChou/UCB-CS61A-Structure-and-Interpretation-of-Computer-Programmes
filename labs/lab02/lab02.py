@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: 周裕涵 HumpreyChou
 # @Date:   2021-01-16 19:32:01
-# @Last Modified by:   周裕涵 HumpreyChou
-# @Last Modified time: 2021-01-16 19:46:38
+# @Last Modified by:   Xia Hanyu (Humprey Chou)
+# @Last Modified time: 2021-01-17 14:43:13
 
 def lambda_curry2(func):
     """
