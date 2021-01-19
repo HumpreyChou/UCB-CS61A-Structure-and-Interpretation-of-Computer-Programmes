@@ -1,4 +1,10 @@
-HW_SOURCE_FILE=__file__
+# -*- coding: utf-8 -*-
+# @Author: Xia Hanyu (Humprey Chou)
+# @Date:   2021-01-19 16:41:02
+# @Last Modified by:   Xia Hanyu (Humprey Chou)
+# @Last Modified time: 2021-01-19 17:29:25
+from operator import sub, mul
+HW_SOURCE_FILE = __file__
 
 
 def composer(func=lambda x: x):
@@ -21,6 +27,8 @@ def composer(func=lambda x: x):
     """
     def func_adder(g):
         "*** YOUR CODE HERE ***"
+        def h(x): return func(g(x))
+        return composer(h)
     return func, func_adder
 
 
@@ -43,6 +51,8 @@ def g(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    return n if n <= 3 else g(n - 1) + 2 * g(n - 2) + 3 * g(n - 3)
+
 
 def g_iter(n):
     """Return the value of G(n), computed iteratively.
@@ -63,6 +73,13 @@ def g_iter(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n <= 3:
+        return n
+    a, b, c = 1, 2, 3
+    while n > 3:
+        a, b, c = b, c, 3 * a + 2 * b + c
+        n -= 1
+    return c
 
 
 def missing_digits(n):
@@ -93,6 +110,13 @@ def missing_digits(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n < 10:
+        return 0
+    one, two = n % 10, n // 10 % 10
+    if one - two <= 1:
+        return missing_digits(n // 10)
+    else:
+        return one - two - 1 + missing_digits(n // 10)
 
 
 def count_change(total):
@@ -112,11 +136,20 @@ def count_change(total):
     True
     """
     "*** YOUR CODE HERE ***"
+    def solve(first, sum):
+        if sum == 0:
+            return 1
+        if first > sum:
+            return 0
+        # choosing the first + not choosing the firet
+        return solve(first, sum - first) + solve(2 * first, sum)
+    return solve(1, total)
 
 
 def print_move(origin, destination):
     """Print instructions to move a disk."""
     print("Move the top disk from rod", origin, "to rod", destination)
+
 
 def move_stack(n, start, end):
     """Print the moves required to move n disks on the start pole to the end
@@ -147,9 +180,14 @@ def move_stack(n, start, end):
     """
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
+    if n == 1:
+        print_move(start, end)
+    else:
+        extra = 6 - start - end
+        move_stack(n - 1, start, extra)
+        print_move(start, end)
+        move_stack(n - 1, extra, end)
 
-
-from operator import sub, mul
 
 def make_anonymous_factorial():
     """Return the value of an expression that computes factorial.
@@ -161,5 +199,5 @@ def make_anonymous_factorial():
     >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial', ['Assign', 'AugAssign', 'FunctionDef', 'Recursion'])
     True
     """
-    return 'YOUR_EXPRESSION_HERE'
-
+    from functools import reduce
+    return lambda n: reduce(mul, range(1, n + 1))
