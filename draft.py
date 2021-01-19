@@ -1,24 +1,13 @@
 # -*- coding: utf-8 -*-
 # @Author: Xia Hanyu (Humprey Chou)
-# @Date:   2021-01-17 15:47:07
+# @Date:   2021-01-19 10:48:47
 # @Last Modified by:   Xia Hanyu (Humprey Chou)
-# @Last Modified time: 2021-01-17 22:13:46
-def f(a, b):
-    """[summary]
-
-    Args:
-        a ([type]): [description]
-        b ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    >>> f(2, 2)
-    """
-    if a > b:
-        return f(a - 3, 2 * b)
-    elif a < b:
-        return f(b // 2, a)
+# @Last Modified time: 2021-01-19 11:17:14
+def Extend_Euclid(x, y):
+    if y == 0:
+        return (x, 1, 0)
     else:
-        return b
+        (d, a, b) = Extend_Euclid(y, x % y)
+        return (d, b, a - (x // y) * b)
 
-print(f(-1, -3))
+print(Extend_Euclid(11, 6))

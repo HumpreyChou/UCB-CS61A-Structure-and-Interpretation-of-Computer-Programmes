@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @Author: Xia Hanyu (Humprey Chou)
+# @Date:   2021-01-19 14:23:45
+# @Last Modified by:   Xia Hanyu (Humprey Chou)
+# @Last Modified time: 2021-01-19 14:23:50
 """CS 61A Presents The Game of Hog."""
 
 from dice import six_sided, four_sided, make_test_dice
