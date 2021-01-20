@@ -2,7 +2,7 @@
 # @Author: Xia Hanyu (Humprey Chou)
 # @Date:   2021-01-20 18:18:11
 # @Last Modified by:   Xia Hanyu (Humprey Chou)
-# @Last Modified time: 2021-01-20 18:49:55
+# @Last Modified time: 2021-01-20 21:12:27
 def coords(fn, seq, lower, upper):
     """
     >>> seq = [-4, -2, 0, 1, 3]
@@ -197,8 +197,8 @@ def build_successors_table(tokens):
     prev = '.'
     for word in tokens:
         if prev not in table:
-            "*** YOUR CODE HERE ***"
-        "*** YOUR CODE HERE ***"
+            table[prev] = []
+        table[prev].append(word)
         prev = word
     return table
 
@@ -216,7 +216,9 @@ def construct_sent(word, table):
     import random
     result = ''
     while word not in ['.', '!', '?']:
-        "*** YOUR CODE HERE ***"
+        result += ' '
+        result += word
+        word = random.choice(table[word])
     return result.strip() + word
 
 
@@ -231,8 +233,8 @@ def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com
         return shakespeare.read().decode(encoding='ascii').split()
 
 # Uncomment the following two lines
-# tokens = shakespeare_tokens()
-# table = build_successors_table(tokens)
+tokens = shakespeare_tokens()
+table = build_successors_table(tokens)
 
 
 def random_sent():
