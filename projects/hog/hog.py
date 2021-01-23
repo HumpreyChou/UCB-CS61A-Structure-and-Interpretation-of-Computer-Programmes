@@ -2,7 +2,7 @@
 # @Author: Xia Hanyu (Humprey Chou)
 # @Date:   2021-01-19 14:23:45
 # @Last Modified by:   Xia Hanyu (Humprey Chou)
-# @Last Modified time: 2021-01-19 14:23:50
+# @Last Modified time: 2021-01-23 23:43:11
 """CS 61A Presents The Game of Hog."""
 
 from dice import six_sided, four_sided, make_test_dice
@@ -27,6 +27,16 @@ def roll_dice(num_rolls, dice=six_sided):
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    score = 0
+    flag = False
+    for i in range(num_rolls):
+        cur = dice()
+        if cur == 1:
+            flag = True
+        score += cur
+    if flag:
+        score = 1
+    return score
     # END PROBLEM 1
 
 
@@ -38,6 +48,10 @@ def free_bacon(score):
     assert score < 100, 'The game should be over.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+    total = 10 - (score % 10)
+    score //= 10
+    total += score % 10
+    return total
     # END PROBLEM 2
 
 
@@ -56,6 +70,9 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     assert opponent_score < 100, 'The game should be over.'
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    if num_rolls == 0:
+        return free_bacon(opponent_score)
+    return roll_dice(num_rolls, dice)
     # END PROBLEM 3
 
 
@@ -65,6 +82,8 @@ def is_swap(player_score, opponent_score):
     """
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    diff = abs((player_score % 10) - (opponent_score % 10))
+    return diff == opponent_score // 10 % 10
     # END PROBLEM 4
 
 
@@ -105,10 +124,37 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
-    # END PROBLEM 5
-    # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
-    # BEGIN PROBLEM 6
-    "*** YOUR CODE HERE ***"
+    last_score0, last_score1 = 0, 0
+    turn = 0
+    while score0 < goal and score1 < goal:
+        if who == 0:
+            num_rolls = strategy0(score0, score1)
+            cur_score0 = take_turn(num_rolls, score1, dice)
+            score0 += cur_score0
+            if feral_hogs and abs(num_rolls - last_score0) == 2:
+                score0 += 3
+            last_score0 = cur_score0
+            if is_swap(score0, score1):
+                score0, score1 = score1, score0
+        else:
+            num_rolls = strategy1(score1, score0)
+            cur_score1 = take_turn(num_rolls, score0, dice)
+            score1 += cur_score1
+            if feral_hogs and abs(num_rolls - last_score1) == 2:
+                score1 += 3
+            last_score1 = cur_score1
+            if is_swap(score1, score0):
+                score0, score1 = score1, score0
+        who = other(who)
+        # END PROBLEM 5
+        # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
+        # BEGIN PROBLEM 6
+        "*** YOUR CODE HERE ***"
+        if turn == 0:
+            commentary = say(score0, score1)
+        else:
+            commentary = commentary(score0, score1)
+        turn += 1
     # END PROBLEM 6
     return score0, score1
 
@@ -195,6 +241,23 @@ def announce_highest(who, last_score=0, running_high=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def comment0(score0, score1):
+        gain = score0 - last_score
+        new_running_high = running_high
+        if gain > new_running_high:
+            print(gain, 'point(s)! That\'s the biggest gain yet for Player 0')
+            new_running_high = gain
+        return announce_highest(who, score0, new_running_high)
+    def comment1(score0, score1):
+        gain = score1 - last_score
+        new_running_high = running_high
+        if gain > new_running_high:
+            print(gain, 'point(s)! That\'s the biggest gain yet for Player 1')
+            new_running_high = gain
+        return announce_highest(who, score1, new_running_high)
+    if who == 0:
+        return comment0
+    return comment1
     # END PROBLEM 7
 
 
