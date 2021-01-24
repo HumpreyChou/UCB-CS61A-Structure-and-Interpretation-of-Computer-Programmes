@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @Author: Xia Hanyu (Humprey Chou)
+# @Date:   2021-01-24 12:23:45
+# @Last Modified by:   Xia Hanyu (Humprey Chou)
+# @Last Modified time: 2021-01-24 13:52:16
 """Typing test implementation"""
 
 from utils import *
@@ -17,6 +22,10 @@ def choose(paragraphs, select, k):
     """
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    correct = list(filter(select, paragraphs))
+    if k >= len(correct):
+        return ''
+    return correct[k]
     # END PROBLEM 1
 
 
@@ -33,6 +42,16 @@ def about(topic):
     assert all([lower(x) == x for x in topic]), 'topics should be lowercase.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+    def select(paragraph):
+        words = paragraph.split()
+        words = list(map(remove_punctuation, words))
+        words = list(map(lower, words))
+        print('DEBUG: ', words)
+        for word in topic:
+            if word in words:
+                return True
+        return False
+    return select
     # END PROBLEM 2
 
 
@@ -57,6 +76,16 @@ def accuracy(typed, reference):
     reference_words = split(reference)
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    cnt = 0
+    typed_len, ref_len = len(typed_words), len(reference_words)
+    if typed_len == 0:
+        return 100.0 if ref_len == 0 else 0.0
+    if ref_len == 0:
+        return 100.0 if typed_len == 0 else 0.0
+    for i in range(typed_len):
+        if i < ref_len and typed_words[i] == reference_words[i]:
+            cnt += 1
+    return cnt / typed_len * 100.0
     # END PROBLEM 3
 
 
