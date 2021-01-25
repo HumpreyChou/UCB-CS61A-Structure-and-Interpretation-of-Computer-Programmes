@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @Author: Xia Hanyu (Humprey Chou)
+# @Date:   2021-01-25 22:29:35
+# @Last Modified by:   Xia Hanyu (Humprey Chou)
+# @Last Modified time: 2021-01-25 22:51:23
 """CS 61A presents Ants Vs. SomeBees."""
 
 import random
@@ -25,6 +30,8 @@ class Place:
         # Phase 1: Add an entrance to the exit
         # BEGIN Problem 2
         "*** YOUR CODE HERE ***"
+        if self.exit != None:
+            self.exit.entrance = self
         # END Problem 2
 
     def add_insect(self, insect):
@@ -142,6 +149,8 @@ class HarvesterAnt(Ant):
     name = 'Harvester'
     implemented = True
     # OVERRIDE CLASS ATTRIBUTES HERE
+    food_cost = 2
+    armor = 1
 
     def action(self, gamestate):
         """Produce 1 additional food for the colony.
@@ -150,6 +159,7 @@ class HarvesterAnt(Ant):
         """
         # BEGIN Problem 1
         "*** YOUR CODE HERE ***"
+        gamestate.food += 1
         # END Problem 1
 
 
@@ -160,6 +170,8 @@ class ThrowerAnt(Ant):
     implemented = True
     damage = 1
     # ADD/OVERRIDE CLASS ATTRIBUTES HERE
+    food_cost = 3
+    armor = 1
 
     def nearest_bee(self, beehive):
         """Return the nearest Bee in a Place that is not the HIVE, connected to
@@ -168,7 +180,12 @@ class ThrowerAnt(Ant):
         This method returns None if there is no such Bee (or none in range).
         """
         # BEGIN Problem 3 and 4
-        return rANTdom_else_none(self.place.bees) # REPLACE THIS LINE
+        p = self.place
+        while p != None and p != beehive:
+            if p.bees:
+                return rANTdom_else_none(p.bees)
+            p = p.entrance
+        return None
         # END Problem 3 and 4
 
     def throw_at(self, target):

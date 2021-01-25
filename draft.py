@@ -2,7 +2,7 @@
 # @Author: Xia Hanyu (Humprey Chou)
 # @Date:   2021-01-19 10:48:47
 # @Last Modified by:   Xia Hanyu (Humprey Chou)
-# @Last Modified time: 2021-01-22 18:01:25
+# @Last Modified time: 2021-01-25 21:52:49
 def Extend_Euclid(x, y):
     """
     Args:
