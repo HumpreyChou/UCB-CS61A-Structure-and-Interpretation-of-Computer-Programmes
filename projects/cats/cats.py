@@ -2,7 +2,7 @@
 # @Author: Xia Hanyu (Humprey Chou)
 # @Date:   2021-01-24 12:23:45
 # @Last Modified by:   Xia Hanyu (Humprey Chou)
-# @Last Modified time: 2021-01-24 13:52:16
+# @Last Modified time: 2021-01-25 21:45:15
 """Typing test implementation"""
 
 from utils import *
@@ -94,6 +94,7 @@ def wpm(typed, elapsed):
     assert elapsed > 0, 'Elapsed time must be positive'
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    return (len(typed) / 5) / (elapsed / 60)
     # END PROBLEM 4
 
 
@@ -104,6 +105,16 @@ def autocorrect(user_word, valid_words, diff_function, limit):
     """
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    if user_word in valid_words:
+        return user_word
+    min_diff = 100000  # a large number
+    ret_word = user_word
+    for word in valid_words:
+        diff = diff_function(user_word, word, limit)
+        if diff <= limit and diff < min_diff:
+            min_diff = diff
+            ret_word = word
+    return ret_word
     # END PROBLEM 5
 
 
@@ -113,30 +124,43 @@ def shifty_shifts(start, goal, limit):
     their lengths.
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    def diff(s1, s2, limit, total):
+        if total > limit:
+            return limit + 1
+        if len(s1) == 0:
+            return len(s2)
+        if len(s2) == 0:
+            return len(s1)
+        if s1[0] != s2[0]:
+            return 1 + diff(s1[1:], s2[1:], limit, total + 1)
+        return diff(s1[1:], s2[1:], limit, total)
+    return diff(start, goal, limit, 0)
     # END PROBLEM 6
 
 
 def meowstake_matches(start, goal, limit):
     """A diff function that computes the edit distance from START to GOAL."""
-    assert False, 'Remove this line'
-
-    if ______________: # Fill in the condition
+    if limit < 0:  # Fill in the condition
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 0
         # END
 
-    elif ___________: # Feel free to remove or add additional cases
+    if len(start) == 0 or len(goal) == 0:  # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return len(start) + len(goal)
         # END
-
+    if start[0] == goal[0]:
+        return meowstake_matches(start[1:], goal[1:], limit)
     else:
-        add_diff = ...  # Fill in these lines
-        remove_diff = ... 
-        substitute_diff = ... 
+        add_diff = meowstake_matches(
+            start[1:], goal, limit - 1)  # Fill in these lines
+        remove_diff = meowstake_matches(start, goal[1:], limit - 1)
+        substitute_diff = meowstake_matches(start[1:], goal[1:], limit - 1)
         # BEGIN
         "*** YOUR CODE HERE ***"
+        return 1 + min(add_diff, remove_diff, substitute_diff)
         # END
 
 
@@ -154,6 +178,17 @@ def report_progress(typed, prompt, id, send):
     """Send a report of your id and progress so far to the multiplayer server."""
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    total, i = 0, 0
+    length = len(typed)
+    while i < length:
+        if typed[i] == prompt[i]:
+            total += 1
+        else:
+            break
+        i += 1
+    progress = total / len(prompt)
+    send({'id': id, 'progress': progress})
+    return progress
     # END PROBLEM 8
 
 
@@ -180,6 +215,11 @@ def time_per_word(times_per_player, words):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    times = []
+    for player in times_per_player:
+        lst = [player[i] - player[i - 1] for i in range(1, len(player))]
+        times.append(lst)
+    return game(words, times)
     # END PROBLEM 9
 
 
@@ -195,15 +235,27 @@ def fastest_words(game):
     words = range(len(all_words(game)))    # An index for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    words = all_words(game)
+    times = all_times(game)
+    fastest = [[] for i in players]
+    for i, word in enumerate(words):
+        word_times = [times[player][i] for player in players]
+        idx = min(players, key=lambda x: word_times[x])
+        fastest[idx].append(word)
+    return fastest
     # END PROBLEM 10
 
 
 def game(words, times):
     """A data abstraction containing all words typed and their times."""
-    assert all([type(w) == str for w in words]), 'words should be a list of strings'
-    assert all([type(t) == list for t in times]), 'times should be a list of lists'
-    assert all([isinstance(i, (int, float)) for t in times for i in t]), 'times lists should contain numbers'
-    assert all([len(t) == len(words) for t in times]), 'There should be one word per time.'
+    assert all([type(w) == str for w in words]
+               ), 'words should be a list of strings'
+    assert all([type(t) == list for t in times]
+               ), 'times should be a list of lists'
+    assert all([isinstance(i, (int, float))
+                for t in times for i in t]), 'times lists should contain numbers'
+    assert all([len(t) == len(words) for t in times]
+               ), 'There should be one word per time.'
     return [words, times]
 
 
@@ -234,42 +286,87 @@ def game_string(game):
     """A helper function that takes in a game object and returns a string representation of it"""
     return "game(%s, %s)" % (game[0], game[1])
 
-enable_multiplayer = False  # Change to True when you
+
+enable_multiplayer = True  # Change to True when you
 
 ##########################
 # Extra Credit #
 ##########################
 
 key_distance = get_key_distances()
+
+
 def key_distance_diff(start, goal, limit):
     """ A diff function that takes into account the distances between keys when
     computing the difference score."""
 
-    start = start.lower() #converts the string to lowercase
-    goal = goal.lower() #converts the string to lowercase
+    start = start.lower()  # converts the string to lowercase
+    goal = goal.lower()  # converts the string to lowercase
 
     # BEGIN PROBLEM EC1
     "*** YOUR CODE HERE ***"
+    if limit < 0:  # Fill in the condition
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        return float('inf')
+        # END
+
+    if len(start) == 0 or len(goal) == 0:  # Feel free to remove or add additional cases
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        return len(start) + len(goal)
+        # END
+    if start[0] == goal[0]:
+        return key_distance_diff(start[1:], goal[1:], limit)
+    else:
+        add_diff = 1 + key_distance_diff(
+            start[1:], goal, limit - 1)  # Fill in these lines
+        remove_diff = 1 + key_distance_diff(start, goal[1:], limit - 1)
+        substitute_diff = key_distance_diff(
+            start[1:], goal[1:], limit - 1) + key_distance[start[0], goal[0]]
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        return min(add_diff, remove_diff, substitute_diff)
+        # END
     # END PROBLEM EC1
+
 
 def memo(f):
     """A memoization function as seen in John Denero's lecture on Growth"""
 
     cache = {}
+
     def memoized(*args):
         if args not in cache:
             cache[args] = f(*args)
         return cache[args]
     return memoized
 
+key_distance_diff = memo(key_distance_diff)
 key_distance_diff = count(key_distance_diff)
 
-
+cache = {}
 def faster_autocorrect(user_word, valid_words, diff_function, limit):
     """A memoized version of the autocorrect function implemented above."""
 
     # BEGIN PROBLEM EC2
     "*** YOUR CODE HERE ***"
+    if (user_word, diff_function, limit) in cache:        
+        return cache[(user_word, diff_function, limit)]
+    if user_word in valid_words:
+        ret_word = user_word
+    else:
+        min_diff = 100000  # a large number
+        ret_word = user_word
+        for word in valid_words:
+            diff = diff_function(user_word, word, limit)
+            if diff <= limit and diff < min_diff:
+                min_diff = diff
+                ret_word = word
+    cache[(user_word, diff_function, limit)] = ret_word    
+    for i in cache.keys():
+        print('DEBUG: ', i)
+    return ret_word
     # END PROBLEM EC2
 
 
@@ -281,7 +378,7 @@ def faster_autocorrect(user_word, valid_words, diff_function, limit):
 def run_typing_test(topics):
     """Measure typing speed and accuracy on the command line."""
     paragraphs = lines_from_file('data/sample_paragraphs.txt')
-    select = lambda p: True
+    def select(p): return True
     if topics:
         select = about(topics)
     i = 0
