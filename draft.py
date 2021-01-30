@@ -21,6 +21,3 @@ def Extend_Euclid(x, y):
     else:
         (d, a, b) = Extend_Euclid(y, x % y)
         return (d, b, a - (x // y) * b)
-
-
-print(Extend_Euclid(11, 6))
