@@ -1,3 +1,4 @@
+from io import open_code
 import operator
 
 from utils import comma_separated
@@ -107,6 +108,7 @@ class Name(Expr):
         None
         """
         "*** YOUR CODE HERE ***"
+        return env.get(self.var_name)
 
     def __str__(self):
         return self.var_name
@@ -173,6 +175,9 @@ class CallExpr(Expr):
         Number(14)
         """
         "*** YOUR CODE HERE ***"
+        operator = self.operator.eval(env)
+        operands = [op.eval(env) for op in self.operands]
+        return operator.apply(operands)
 
     def __str__(self):
         function = str(self.operator)
@@ -282,6 +287,10 @@ class LambdaFunction(Value):
             raise TypeError("Oof! Cannot apply number {} to arguments {}".format(
                 comma_separated(self.parameters), comma_separated(arguments)))
         "*** YOUR CODE HERE ***"
+        env = self.parent.copy()
+        for key, value in zip(self.parameters, arguments):
+            env.update({key: value})
+        return self.body.eval(env)
 
     def __str__(self):
         definition = LambdaExpr(self.parameters, self.body)
